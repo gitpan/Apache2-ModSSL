@@ -3,9 +3,9 @@ package Apache2::ModSSL;
 use strict;
 use warnings FATAL => 'all';
 
-use Apache2::XSLoader ();
-our $VERSION = '0.03';
-Apache2::XSLoader::load __PACKAGE__;
+use XSLoader ();
+our $VERSION = '0.04';
+XSLoader::load __PACKAGE__;
 
 1;
 
@@ -134,7 +134,7 @@ Torsten Foertsch, E<lt>torsten.foertsch@gmx.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2004-2005 by Torsten Foertsch
+Copyright (C) 2004-2008 by Torsten Foertsch
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

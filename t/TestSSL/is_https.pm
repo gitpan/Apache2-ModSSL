@@ -1,5 +1,7 @@
 package TestSSL::is_https;
 
+BEGIN {local $"="\n    "; warn "INC=@INC\n";}
+
 use strict;
 use warnings FATAL => 'all';
 no warnings 'uninitialized';

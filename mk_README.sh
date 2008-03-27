@@ -8,7 +8,7 @@ exit 0
 
 =head1 INSTALLATION
 
- perl Makefile.PL
+ perl Makefile.PL -apxs /path/to/apxs
  make
  make test
  make install

@@ -1,4 +1,4 @@
-PerlSwitches -I@ServerRoot@/../lib -I@ServerRoot@/../t/TestSSL
+#PerlSwitches -I@ServerRoot@/../lib -I@ServerRoot@/../t/TestSSL
 
 PerlModule TestSSL::is_https
 PerlModule TestSSL::lookup
