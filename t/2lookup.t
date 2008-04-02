@@ -27,7 +27,7 @@ sub test {
 }
 
 if( ssl_loaded ) {
-  plan tests => 6;
+  plan tests => 9;
 
   ok t_cmp( test( 'default', 'lookup?HTTPS' ), "off\n", "HTTPS off" );
   ok t_cmp( test( 'SSL', 'lookup?HTTPS' ), "on\n", "HTTPS on" );
@@ -35,6 +35,14 @@ if( ssl_loaded ) {
   ok t_cmp( test( 'SSL', 'lookup?SSL_SERVER_S_DN' ), '/C=DE/ST=Baden-Wuertemberg/L=Gaiberg/O=Foertsch Consulting/CN=localhost/emailAddress=torsten.foertsch@gmx.net'."\n", "SSL_SERVER_S_DN" );
   ok t_cmp( test( 'SSL', 'lookup?SSL_SERVER_I_DN' ), '/C=DE/ST=Baden-Wuertemberg/L=Gaiberg/O=Foertsch Consulting/OU=CA/CN=Foertsch Consulting CA/emailAddress=torsten.foertsch@gmx.net'."\n", "SSL_SERVER_S_DN" );
   ok t_cmp( test( 'SSL', 'lookup?DUMMY' ), "\n", "DUMMY" );
+  ok t_cmp( test( 'SSL', 'lookup/ext?2.16.840.1.113730.1.13' ), "Mail to torsten.foertsch\@gmx.net\n", "nsComment" );
+  ok t_cmp( test( 'SSL', 'lookup/ext?2.5.29.35' ), <<'EOT', "authorityKeyIdentifier" );
+keyid:4A:3A:1F:65:22:A1:67:11:A7:7E:22:E7:D4:0D:D0:11:4A:4F:6D:82
+DirName:/C=DE/ST=Baden-Wuertemberg/L=Gaiberg/O=Foertsch Consulting/OU=CA/CN=Foertsch Consulting CA/emailAddress=torsten.foertsch@gmx.net
+serial:00
+
+EOT
+  ok t_cmp( test( 'SSL', 'lookup/ext?2.5.29.19' ), "CA:FALSE\n", "basicConstraints" );
 } else {
   plan tests => 2;
 

@@ -14,7 +14,12 @@ sub handler {
   my $r = shift;
 
   $r->content_type('text/plain');
-  my $rc=$r->connection->ssl_var_lookup($r->args);
+  my $rc;
+  if( $r->uri=~m!/ext$! ) {
+    $rc=$r->connection->ssl_ext_lookup(0, $r->args);
+  } else {
+    $rc=$r->connection->ssl_var_lookup($r->args);
+  }
   $rc="UNDEF" unless( defined $rc );
   $r->print($rc."\n");
 

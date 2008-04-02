@@ -4,8 +4,8 @@ use strict;
 use warnings FATAL => 'all';
 
 use XSLoader ();
-our $VERSION = '0.04';
-XSLoader::load __PACKAGE__;
+our $VERSION = '0.05';
+XSLoader::load __PACKAGE__, $VERSION;
 
 1;
 
@@ -19,15 +19,16 @@ Apache2::ModSSL - a Perl Interface to mod_ssl functions
 
  use Apache2::ModSSL;
 
- if( $r->connection->is_https ) {
-   $r->print( $r->connection->ssl_var_lookup('SSL_SERVER_S_DN') );
+ my $c=$r->connection;
+ if( $c->is_https ) {
+   $dn=$c->ssl_var_lookup('SSL_SERVER_S_DN');
+   $nsComment=$c->ssl_ext_lookup(0, '2.16.840.1.113730.1.13');
  }
 
 =head1 ABSTRACT
 
-C<Apache2::ModSSL> adds 2 functions to the C<Apache2::Connection> class.
-C<is_https()> returns true if the connection SSL-encrypted.
-C<ssl_var_lookup()> is used to query more detailed information.
+C<Apache2::ModSSL> adds a few functions that are exported from C<mod_ssl>
+to the C<Apache2::Connection> class.
 
 =head1 METHODS
 
@@ -116,6 +117,14 @@ At the time of this writing this list includes (not complete):
 =item B<SSL_(CLIENT|SERVER)_CERT>
 
 =back
+
+=item B<$c-E<gt>ssl_ext_lookup(WHERE, OID)>
+
+C<ssl_ext_lookup()> returns the value of an SSL certificate extension.
+C<WHERE> specifies whether to look in the WEB server certificate (C<WHERE==0>)
+or in the client certificate (C<WHERE==1>). C<OID> is the Object Identifier
+for the extension in dotted notation, e.g. C<2.16.840.1.11330.1.13> for
+C<Netscape Comment> or C<2.5.29.19> for C<X509v3 Basic Constraints>.
 
 =back
 

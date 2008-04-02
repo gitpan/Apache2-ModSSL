@@ -7,12 +7,15 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                          conn_rec *, request_rec *,
                          char *));
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
+APR_DECLARE_OPTIONAL_FN(const char *, ssl_ext_lookup,
+                        (apr_pool_t *p, conn_rec *c, int peer,
+                         const char *oidnum));
 
 typedef conn_rec *Apache2__Connection;
-typedef request_rec *Apache2__Request;
 
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *lookup = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *is_https = NULL;
+static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *lookup = NULL;
+static APR_OPTIONAL_FN_TYPE(ssl_ext_lookup) *ext_lookup = NULL;
 
 static const char * const aszPre[] = { "mod_ssl.c", NULL };
 
@@ -20,8 +23,9 @@ static int
 retrieve_functions(apr_pool_t *p, apr_pool_t *plog,
 		   apr_pool_t *ptemp, server_rec *s)
 {
-  lookup=APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
   is_https=APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
+  lookup=APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+  ext_lookup=APR_RETRIEVE_OPTIONAL_FN(ssl_ext_lookup);
   return OK;
 }
 
@@ -46,8 +50,38 @@ mpxs_Apache2__Connection_ssl_var_lookup(c, var)
 PROTOTYPE: $$
 PPCODE:
   {
+    apr_pool_t *p=NULL;
+    apr_status_t stat;
+    char buf[512];
+
     if( !lookup ) return XSRETURN_UNDEF;
-    PUSHs(sv_2mortal(newSVpv(lookup( NULL, c->base_server, c, NULL, var ), 0)));
+    if( (stat=apr_pool_create( &p, NULL ))!=APR_SUCCESS ) {
+      croak("Cannot create temp pool: %s", apr_strerror(stat, buf, sizeof(buf)));
+    }
+    PUSHs(sv_2mortal(newSVpv(lookup( p, c->base_server, c, NULL, var ), 0)));
+    apr_pool_destroy( p );
+  }
+
+void
+mpxs_Apache2__Connection_ssl_ext_lookup(c, peer, oid)
+    Apache2::Connection c
+    int peer
+    char *oid
+PROTOTYPE: $$
+PPCODE:
+  {
+    apr_pool_t *p=NULL;
+    apr_status_t stat;
+    char buf[512];
+    const char *ptr;
+
+    if( !lookup ) return XSRETURN_UNDEF;
+    if( (stat=apr_pool_create( &p, NULL ))!=APR_SUCCESS ) {
+      croak("Cannot create temp pool: %s", apr_strerror(stat, buf, sizeof(buf)));
+    }
+    ptr=ext_lookup( p, c, peer, oid );
+    if( ptr ) PUSHs(sv_2mortal(newSVpv(ptr, 0)));
+    apr_pool_destroy( p );
   }
 
 MODULE = Apache2::ModSSL

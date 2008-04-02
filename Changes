@@ -1,5 +1,8 @@
 Revision history for Perl extension Apache::ModSSL.
 
+0.05  Wed Apr  2 21:27:49 CEST 2008
+	- added ssl_ext_lookup method
+
 0.04  Thu Mar 27 10:37:47 CET 2008
 	- Crypt::SSLeay added to dependencies
 	- Makefile.PL now accepts the -apxs option.
