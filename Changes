@@ -1,5 +1,9 @@
 Revision history for Perl extension Apache::ModSSL.
 
+0.06  Thu Apr  3 09:26:46 CEST 2008
+	- make it use()able without mod_perl, e.g. for doing
+	  perl -MApache2::ModSSL -le 'print $Apache2::ModSSL::VERSION'
+
 0.05  Wed Apr  2 21:27:49 CEST 2008
 	- added ssl_ext_lookup method
 

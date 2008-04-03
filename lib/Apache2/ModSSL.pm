@@ -4,8 +4,9 @@ use strict;
 use warnings FATAL => 'all';
 
 use XSLoader ();
-our $VERSION = '0.05';
-XSLoader::load __PACKAGE__, $VERSION;
+our $VERSION = '0.06';
+XSLoader::load __PACKAGE__, $VERSION
+  if( exists $ENV{MOD_PERL} and $ENV{MOD_PERL}=~/mod_perl/ );
 
 1;
 
