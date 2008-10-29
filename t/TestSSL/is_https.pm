@@ -9,13 +9,13 @@ no warnings 'uninitialized';
 use Apache2::RequestRec ();
 use Apache2::RequestUtil ();
 use Apache2::RequestIO ();
-use Apache2::ModSSL ();
 
 use Apache2::Const -compile => qw(OK DECLINED);
 
 sub handler {
   my $r = shift;
 
+  eval "require Apache2::ModSSL;";
   $r->content_type('text/plain');
   my $is_https=$r->connection->is_https;
   $is_https="UNDEF" unless( defined $is_https );

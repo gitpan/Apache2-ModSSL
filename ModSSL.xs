@@ -17,16 +17,16 @@ static APR_OPTIONAL_FN_TYPE(ssl_is_https) *is_https = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *lookup = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_ext_lookup) *ext_lookup = NULL;
 
-static const char * const aszPre[] = { "mod_ssl.c", NULL };
+static int is_initialized=0;
 
-static int
-retrieve_functions(apr_pool_t *p, apr_pool_t *plog,
-		   apr_pool_t *ptemp, server_rec *s)
+static void
+retrieve_functions(void)
 {
+  if( is_initialized ) return;
+  is_initialized++;
   is_https=APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
   lookup=APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
   ext_lookup=APR_RETRIEVE_OPTIONAL_FN(ssl_ext_lookup);
-  return OK;
 }
 
 MODULE = Apache2::ModSSL    PACKAGE = Apache2::Connection   PREFIX = mpxs_Apache2__Connection_
@@ -37,6 +37,7 @@ mpxs_Apache2__Connection_is_https(c)
 PROTOTYPE: $
 CODE:
   {
+    retrieve_functions();
     if( !is_https ) return XSRETURN_UNDEF;
     RETVAL=is_https(c);
   }
@@ -54,6 +55,7 @@ PPCODE:
     apr_status_t stat;
     char buf[512];
 
+    retrieve_functions();
     if( !lookup ) return XSRETURN_UNDEF;
     if( (stat=apr_pool_create( &p, NULL ))!=APR_SUCCESS ) {
       croak("Cannot create temp pool: %s", apr_strerror(stat, buf, sizeof(buf)));
@@ -75,6 +77,7 @@ PPCODE:
     char buf[512];
     const char *ptr;
 
+    retrieve_functions();
     if( !lookup ) return XSRETURN_UNDEF;
     if( (stat=apr_pool_create( &p, NULL ))!=APR_SUCCESS ) {
       croak("Cannot create temp pool: %s", apr_strerror(stat, buf, sizeof(buf)));
@@ -83,12 +86,6 @@ PPCODE:
     if( ptr ) PUSHs(sv_2mortal(newSVpv(ptr, 0)));
     apr_pool_destroy( p );
   }
-
-MODULE = Apache2::ModSSL
-
-BOOT:
-    ap_hook_post_config(retrieve_functions, aszPre, NULL, APR_HOOK_FIRST);
-    items = items; /* -Wall */
 
 ## Local Variables: ##
 ## mode: c ##

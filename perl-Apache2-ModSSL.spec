@@ -19,8 +19,8 @@ Requires:     perl = %{perl_version}
 Requires:     opt-modperl opt-apache
 Autoreqprov:  on
 Summary:      Perl interface to mod_ssl
-Version:      0.05
-Release:      1
+Version:      0.07
+Release:      2
 Source:       Apache2-ModSSL-%{version}.tar.gz
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 BuildRequires: httpd22-prefork-devel httpd22-worker-devel
@@ -30,6 +30,7 @@ BuildRequires: opt-modperl opt-apache perl-Crypt-SSLeay
 
 %define layout_base /opt/mod_perl
 %define perl_v %(perl -e 'printf "%vd", $^V')
+%define perl_arch %(perl -MConfig -e 'print $Config{archname}')
 %define _mandir %layout_base/man
 %define perl_sitebin %layout_base/bin
 
@@ -57,7 +58,7 @@ make &&
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;
 make DESTDIR=$RPM_BUILD_ROOT \
-     INSTALLSITEARCH=%layout_base/%{perl_v}/i586-linux-thread-multi \
+     INSTALLSITEARCH=%layout_base/%{perl_v}/%{perl_arch} \
      INSTALLSITELIB=%layout_base/%{perl_v} \
      INSTALLSITEBIN=%perl_sitebin \
      INSTALLSITESCRIPT=%perl_sitebin \

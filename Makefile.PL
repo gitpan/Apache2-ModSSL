@@ -27,12 +27,21 @@ for( my $i=0; $i<@ARGV; $i++ ) {
 }
 
 unless( length $apxs ) {
-  foreach my $p (File::Spec->path, qw!/usr/local/apache2/bin
-				      /usr/local/bin
-				      /usr/local/sbin
-				      /opt/apache/bin
-				      /opt/apache/sbin!) {
-    if( -x File::Spec->catfile( $p, 'apxs' ) ) {
+  foreach my $p (File::Spec->path,
+		 qw!/usr/local/apache2/bin
+		    /usr/local/apache2/sbin
+		    /usr/local/apache/bin
+		    /usr/local/apache/sbin
+		    /usr/local/bin
+		    /usr/local/sbin
+		    /opt/apache2/bin
+		    /opt/apache2/sbin
+		    /opt/apache/bin
+		    /opt/apache/sbin!) {
+    if( -x File::Spec->catfile( $p, 'apxs2' ) ) {
+      $apxs=File::Spec->catfile( $p, 'apxs2' );
+      last;
+    } elsif( -x File::Spec->catfile( $p, 'apxs' ) ) {
       $apxs=File::Spec->catfile( $p, 'apxs' );
       last;
     }
@@ -63,7 +72,8 @@ ModPerl::MM::WriteMakefile(
 		    'Crypt::SSLeay' => 0,
 		   },
   dist          => {
-		    PREOP => './mk_README.sh',
+		    COMPRESS => 'gzip -9f',
+		    PREOP    => './mk_README.sh',
 		   },
   clean         => {
 		    FILES=>"t/TEST",
@@ -72,11 +82,6 @@ ModPerl::MM::WriteMakefile(
 
 sub MY::postamble {
   return <<'EOF';
-COMPRESS = gzip -9f
-
-README: lib/Apache2/ModSSL.pm mk_README.sh
-	./mk_README.sh
-
 rpm: dist
 	$(PERL) -i -pe 's/^(Version:\s*).*/$${1}$(VERSION)/' perl-Apache2-ModSSL.spec
 	rpmbuild -ba perl-Apache2-ModSSL.spec
