@@ -1,8 +1,10 @@
 use strict;
 #use warnings FATAL => 'all';
 
-use Apache::Test qw(:withtestmore);
-use Test::More;
+use Apache::Test ();            # just load it to get the version
+use version;
+use Apache::Test (version->parse(Apache::Test->VERSION)>=version->parse('1.35')
+                  ? '-withtestmore' : ':withtestmore');
 use Apache::TestUtil;
 use Apache::TestRequest 'GET_BODY';
 

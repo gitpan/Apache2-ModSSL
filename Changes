@@ -1,5 +1,8 @@
 Revision history for Perl extension Apache::ModSSL.
 
+0.08  Fri May  6 16:13:02 CEST 2011
+	- :withtestmore ==> -withtestmore (see Apache::Test)
+
 0.07  Wed Oct 29 10:56:45 CET 2008
 	- removed the post_config hook for ssl function retrieval.
 

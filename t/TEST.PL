@@ -5,6 +5,8 @@ use warnings FATAL => 'all';
 
 use lib qw(lib);
 
+BEGIN {$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME}=0}
+
 use Apache::TestRunPerl ();
 
 my $I=Apache::TestRunPerl->new;

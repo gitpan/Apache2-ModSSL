@@ -20,7 +20,7 @@ Requires:     opt-modperl opt-apache
 Autoreqprov:  on
 Summary:      Perl interface to mod_ssl
 Version:      0.07
-Release:      2
+Release:      3
 Source:       Apache2-ModSSL-%{version}.tar.gz
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 BuildRequires: httpd22-prefork-devel httpd22-worker-devel
