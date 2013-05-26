@@ -20,4 +20,4 @@ no_index:
 requires:
   Crypt::SSLeay: 0
   mod_perl2: 0
-version: 0.09
+version: 0.10

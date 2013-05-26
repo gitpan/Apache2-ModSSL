@@ -4,7 +4,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use XSLoader ();
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 XSLoader::load __PACKAGE__, $VERSION
   if( exists $ENV{MOD_PERL} and $ENV{MOD_PERL}=~/mod_perl/ );
 

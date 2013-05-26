@@ -1,5 +1,8 @@
 Revision history for Perl extension Apache::ModSSL.
 
+0.10  Sun May 26 17:25:33 CEST 2013
+      - reactivate tests w/o mod_ssl
+
 0.09  Sun May 26 17:12:25 CEST 2013
       - fix tests to work with newer A::T versions
         newer A::T versions create an UA that uses an explicit SSL_ca_file
