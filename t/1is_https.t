@@ -28,6 +28,13 @@ sub test {
   return GET_BODY "http".($conf=~'SSL'?'s':'')."://$hostport/TestSSL/".$addr;
 }
 
+Apache::TestRequest::user_agent
+  (reset=>1,
+   ssl_opts=>{
+              SSL_ca_file=>undef,
+              SSL_verify_mode=>0,
+             });
+
 if( ssl_loaded ) {
 #if( need_module 'ssl' ) {
   plan tests => 2;
